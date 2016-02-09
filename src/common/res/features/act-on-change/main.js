@@ -25,34 +25,25 @@
 
         mutations.forEach(function(mutation) {
           var newNodes = mutation.target;
-          if (ynabToolKit.debugNodes) {
-            console.log(newNodes);
-          }
-
+          
           var $nodes = $(newNodes); // jQuery set
           $nodes.each(function() {
-            var $node = $(this);
-
-            try {
-              nodeClasses = new Set($node[0].className.split(' '));
-            } catch(err) {
-              ynabToolKit.debugNodes.errors = err
-            }
-
-            ynabToolKit.changedNodes = new Set([...ynabToolKit.changedNodes, ...nodeClasses]);
-
+            var nodeClass = $(this).attr('class');
+            if (nodeClass) ynabToolKit.changedNodes.add(nodeClass.replace(/^ember-view /,''));
           }); // each node mutation event
 
         }); // each mutation event
 
         if (ynabToolKit.debugNodes) {
-          console.log('###')
+          console.log(ynabToolKit.changedNodes);
+          console.log('###');
         }
 
         // Now we are ready to feed the change digest to the
         // automatically setup feedChanges file/function
-        ynabToolKit.shared.feedChanges(ynabToolKit.changedNodes);
-
+        if (ynabToolKit.changedNodes.size > 0) {
+          ynabToolKit.shared.feedChanges(ynabToolKit.changedNodes);
+        }
       });
 
       // This finally says 'Watch for changes' and only needs to be called the one time
@@ -60,6 +51,7 @@
         subtree : true,
         childList : true,
         characterData : true,
+        attributes: true,
         attributeFilter : [ 'class' ]
       });
 

@@ -23,27 +23,30 @@
         var subCategories = $("ul.is-sub-category");
         $(subCategories).each(function () {
           var subCategoryName = $(this).find("li.budget-table-cell-name>div>div")[0].title;
-          calculation = getCalculation(subCategoryName);
 
-          if (calculation.goalExpectedCompletion > 0) {
-            // Target total goal
-            addIndicator(this, "T", "Target balance");
-          }
-          else if (calculation.goalTarget > 0) {
-            // Taget by date
-            // or Montly goal
-            addIndicator(this, "M", "Monthly budgeting or Target by date that is sort of monthly");
-          }
-          else if (calculation.upcomingTransactions < 0) {
-            // Upcoming transactions "goal"
-            addIndicator(this, "U", "Upcoming transactions");
-          }
+			 if ( "Uncategorized Transactions" != subCategoryName ) {
+				 calculation = getCalculation(subCategoryName);
+
+				 if (calculation.goalExpectedCompletion > 0) {
+					// Target total goal
+					addIndicator(this, "T", "Target balance");
+				 }
+				 else if (calculation.goalTarget > 0) {
+					// Taget by date
+					// or Montly goal
+					addIndicator(this, "M", "Monthly budgeting or Target by date that is sort of monthly");
+				 }
+				 else if (calculation.upcomingTransactions < 0) {
+					// Upcoming transactions "goal"
+					addIndicator(this, "U", "Upcoming transactions");
+				 }
+			 }
         });
       },
 
       this.observe = function(changedNodes) {
 
-        if ( (changedNodes.has('navlink-budget') && changedNodes.has('active') ) || changedNodes.has('budget-inspector') ) {
+        if ( changedNodes.has('navlink-budget active') || changedNodes.has('budget-inspector') ) {
           ynabToolKit.goalIndicator.invoke();
         }
       };
